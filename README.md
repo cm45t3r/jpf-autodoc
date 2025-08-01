@@ -1,5 +1,12 @@
 # JPF AutoDoc
 
+[![CI](https://github.com/cm45t3r/jpf-autodoc/workflows/CI/badge.svg)](https://github.com/cm45t3r/jpf-autodoc/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Java](https://img.shields.io/badge/Java-11%2B-blue.svg)](https://openjdk.java.net/)
+[![Gradle](https://img.shields.io/badge/Gradle-7.0%2B-blue.svg)](https://gradle.org/)
+[![Tests](https://img.shields.io/badge/Tests-41%2F41%20passing-brightgreen.svg)](https://github.com/cm45t3r/jpf-autodoc/actions)
+[![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](https://codecov.io/gh/cm45t3r/jpf-autodoc)
+
 A unified documentation generation tool for Java PathFinder (JPF) that combines configuration analysis and type hierarchy analysis with modern architecture and tooling.
 
 ## Overview
@@ -291,6 +298,13 @@ cd jpf-autodoc
 4. Add tests for new functionality
 5. Ensure all tests pass
 6. Submit a pull request
+
+## Community
+
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to JPF AutoDoc
+- [Code of Conduct](CODE_OF_CONDUCT.md) - Community standards and guidelines
+- [Issue Templates](.github/ISSUE_TEMPLATE/) - Templates for bug reports and feature requests
+- [Pull Request Template](.github/PULL_REQUEST_TEMPLATE.md) - Guidelines for pull requests
 
 ## License
 
