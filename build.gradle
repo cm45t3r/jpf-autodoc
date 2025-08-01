@@ -17,7 +17,18 @@ application {
 repositories {
     mavenCentral()
     flatDir {
-        dirs '../jpf-core/build/libs'
+        // Multiple possible locations for jpf-core JAR
+        dirs = [
+            // Default location (parent directory)
+            '../jpf-core/build/libs',
+            // Alternative locations
+            '../jpf-core/build',
+            './jpf-core/build/libs',
+            './jpf-core/build',
+            // Custom location via system property
+            System.getProperty('jpf.core.path', '') + '/build/libs',
+            System.getProperty('jpf.core.path', '') + '/build'
+        ].findAll { it && new File(it).exists() }
     }
 }
 

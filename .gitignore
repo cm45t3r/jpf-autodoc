@@ -231,6 +231,7 @@ output/
 !PULL_REQUEST_TEMPLATE.md
 !SECURITY.md
 !src/**/*.md
+!docs/**/*.md
 
 # Test output files
 test-output/
