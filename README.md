@@ -296,6 +296,8 @@ cd jpf-autodoc
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
+**Copyright Notice**: The Java source files contain NASA copyright notices as they are part of the JPF ecosystem. The LICENSE file contains the standard Apache License 2.0 template.
+
 ## Support
 
 For issues and questions:
