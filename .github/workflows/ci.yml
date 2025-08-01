@@ -36,6 +36,11 @@ jobs:
         cd ../jpf-core
         ./gradlew buildJars
     
+    - name: Verify jpf-core JAR exists
+      run: |
+        ls -la ../jpf-core/build/libs/
+        test -f ../jpf-core/build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
+    
     - name: Set up JDK ${{ matrix.java }} for jpf-autodoc
       uses: actions/setup-java@v4
       with:
@@ -106,6 +111,11 @@ jobs:
         cd ../jpf-core
         ./gradlew buildJars
     
+    - name: Verify jpf-core JAR exists
+      run: |
+        ls -la ../jpf-core/build/libs/
+        test -f ../jpf-core/build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
+    
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
@@ -151,6 +161,11 @@ jobs:
       run: |
         cd ../jpf-core
         ./gradlew buildJars
+    
+    - name: Verify jpf-core JAR exists
+      run: |
+        ls -la ../jpf-core/build/libs/
+        test -f ../jpf-core/build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
