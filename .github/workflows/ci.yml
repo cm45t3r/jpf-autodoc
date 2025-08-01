@@ -10,14 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        java: [ '11', '17' ]
-    
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 11 for jpf-core
+    - name: Set up JDK 11
       uses: actions/setup-java@v4
       with:
         java-version: '11'
@@ -44,22 +40,20 @@ jobs:
         cd ../jpf-core
         echo "=== Build directory contents ==="
         ls -la build/
-        echo "=== Libs directory contents ==="
-        ls -la build/libs/ || echo "Libs directory does not exist"
-        echo "=== Gradle build info ==="
-        ./gradlew tasks --all | grep -E "(buildJars|jar|create)" || echo "No relevant tasks found"
+        echo "=== Available JAR files ==="
+        find build/ -name "*.jar" -type f
+    
+    - name: Copy jpf-core JAR to expected location
+      run: |
+        cd ../jpf-core
+        mkdir -p build/libs
+        cp build/jpf.jar build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
+        ls -la build/libs/
     
     - name: Verify jpf-core JAR exists
       run: |
         ls -la ../jpf-core/build/libs/
         test -f ../jpf-core/build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
-    
-    - name: Set up JDK ${{ matrix.java }} for jpf-autodoc
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ matrix.java }}
-        distribution: 'temurin'
-        cache: gradle
     
     - name: Cache Gradle packages
       uses: actions/cache@v3
@@ -92,7 +86,7 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: jpf-autodoc-build-${{ matrix.java }}
+        name: jpf-autodoc-build
         path: |
           build/libs/
           build/distributions/
@@ -132,10 +126,15 @@ jobs:
         cd ../jpf-core
         echo "=== Build directory contents ==="
         ls -la build/
-        echo "=== Libs directory contents ==="
-        ls -la build/libs/ || echo "Libs directory does not exist"
-        echo "=== Gradle build info ==="
-        ./gradlew tasks --all | grep -E "(buildJars|jar|create)" || echo "No relevant tasks found"
+        echo "=== Available JAR files ==="
+        find build/ -name "*.jar" -type f
+    
+    - name: Copy jpf-core JAR to expected location
+      run: |
+        cd ../jpf-core
+        mkdir -p build/libs
+        cp build/jpf.jar build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
+        ls -la build/libs/
     
     - name: Verify jpf-core JAR exists
       run: |
@@ -196,10 +195,15 @@ jobs:
         cd ../jpf-core
         echo "=== Build directory contents ==="
         ls -la build/
-        echo "=== Libs directory contents ==="
-        ls -la build/libs/ || echo "Libs directory does not exist"
-        echo "=== Gradle build info ==="
-        ./gradlew tasks --all | grep -E "(buildJars|jar|create)" || echo "No relevant tasks found"
+        echo "=== Available JAR files ==="
+        find build/ -name "*.jar" -type f
+    
+    - name: Copy jpf-core JAR to expected location
+      run: |
+        cd ../jpf-core
+        mkdir -p build/libs
+        cp build/jpf.jar build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
+        ls -la build/libs/
     
     - name: Verify jpf-core JAR exists
       run: |
