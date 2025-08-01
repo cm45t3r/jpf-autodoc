@@ -36,10 +36,14 @@ class SitePropertiesReaderTest {
     Path tempDir;
 
     private Path sitePropertiesFile;
+    private String originalUserHome;
 
     @BeforeEach
     void setUp() throws IOException {
         sitePropertiesFile = tempDir.resolve("site.properties");
+        originalUserHome = System.getProperty("user.home");
+        // Set user.home to temp directory to avoid reading real site.properties
+        System.setProperty("user.home", tempDir.toString());
     }
 
     @Test
@@ -48,17 +52,9 @@ class SitePropertiesReaderTest {
         String content = "jpf-core = /opt/jpf/jpf-core\nextensions=${jpf-core}";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location by setting up the search path
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", tempDir.toString());
-            
-            // Test that the path is read correctly
-            String result = SitePropertiesReader.getJpfCorePath();
-            assertThat(result).isEqualTo("/opt/jpf/jpf-core");
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that the path is read correctly
+        String result = SitePropertiesReader.getJpfCorePath();
+        assertThat(result).isEqualTo("/opt/jpf/jpf-core");
     }
 
     @Test
@@ -67,17 +63,9 @@ class SitePropertiesReaderTest {
         String content = "jpf-core = ${user.home}/workspace/jpf/jpf-core\nextensions=${jpf-core}";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", "/home/testuser");
-            
-            // Test that the variable is resolved correctly
-            String result = SitePropertiesReader.getJpfCorePath();
-            assertThat(result).isEqualTo("/home/testuser/workspace/jpf/jpf-core");
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that the variable is resolved correctly
+        String result = SitePropertiesReader.getJpfCorePath();
+        assertThat(result).isEqualTo(tempDir.toString() + "/workspace/jpf/jpf-core");
     }
 
     @Test
@@ -86,17 +74,9 @@ class SitePropertiesReaderTest {
         String content = "jpf-core = ../jpf-core\nextensions=${jpf-core}";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", tempDir.toString());
-            
-            // Test that the relative path is preserved
-            String result = SitePropertiesReader.getJpfCorePath();
-            assertThat(result).isEqualTo("../jpf-core");
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that the relative path is preserved
+        String result = SitePropertiesReader.getJpfCorePath();
+        assertThat(result).isEqualTo("../jpf-core");
     }
 
     @Test
@@ -105,17 +85,9 @@ class SitePropertiesReaderTest {
         String content = "jpf-core = \nextensions=${jpf-core}";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", tempDir.toString());
-            
-            // Test that empty value returns null
-            String result = SitePropertiesReader.getJpfCorePath();
-            assertThat(result).isNull();
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that empty value returns null
+        String result = SitePropertiesReader.getJpfCorePath();
+        assertThat(result).isNull();
     }
 
     @Test
@@ -124,17 +96,9 @@ class SitePropertiesReaderTest {
         String content = "jpf-core =   /opt/jpf/jpf-core  \nextensions=${jpf-core}";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", tempDir.toString());
-            
-            // Test that whitespace is trimmed
-            String result = SitePropertiesReader.getJpfCorePath();
-            assertThat(result).isEqualTo("/opt/jpf/jpf-core");
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that whitespace is trimmed
+        String result = SitePropertiesReader.getJpfCorePath();
+        assertThat(result).isEqualTo("/opt/jpf/jpf-core");
     }
 
     @Test
@@ -150,17 +114,9 @@ class SitePropertiesReaderTest {
         String content = "invalid format\njpf-core = /opt/jpf/jpf-core";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", tempDir.toString());
-            
-            // Test that it still reads the valid property
-            String result = SitePropertiesReader.getJpfCorePath();
-            assertThat(result).isEqualTo("/opt/jpf/jpf-core");
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that it still reads the valid property
+        String result = SitePropertiesReader.getJpfCorePath();
+        assertThat(result).isEqualTo("/opt/jpf/jpf-core");
     }
 
     @Test
@@ -169,19 +125,11 @@ class SitePropertiesReaderTest {
         String content = "jpf-core = /opt/jpf/jpf-core\nextensions=${jpf-core}";
         Files.write(sitePropertiesFile, content.getBytes());
 
-        // Mock the file location
-        String originalUserHome = System.getProperty("user.home");
-        try {
-            System.setProperty("user.home", tempDir.toString());
-            
-            // Test that JAR locations are generated correctly
-            String[] locations = SitePropertiesReader.getJpfCoreJarLocations();
-            assertThat(locations).hasSize(2);
-            assertThat(locations[0]).isEqualTo("/opt/jpf/jpf-core/build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar");
-            assertThat(locations[1]).isEqualTo("/opt/jpf/jpf-core/build/jpf.jar");
-        } finally {
-            System.setProperty("user.home", originalUserHome);
-        }
+        // Test that JAR locations are generated correctly
+        String[] locations = SitePropertiesReader.getJpfCoreJarLocations();
+        assertThat(locations).hasSize(2);
+        assertThat(locations[0]).isEqualTo("/opt/jpf/jpf-core/build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar");
+        assertThat(locations[1]).isEqualTo("/opt/jpf/jpf-core/build/jpf.jar");
     }
 
     @Test
