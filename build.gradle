@@ -14,11 +14,59 @@ application {
     mainClass = 'gov.nasa.jpf.autodoc.cli.JPFAutoDocCLI'
 }
 
+// Custom task to get jpf-core paths from site.properties
+task getJpfCorePaths {
+    doLast {
+        def jpfCorePaths = []
+        
+        // Check site.properties locations
+        def sitePropertiesLocations = [
+            '../site.properties',
+            System.getProperty('user.home') + '/.jpf/site.properties'
+        ]
+        
+        sitePropertiesLocations.each { location ->
+            def file = new File(location)
+            if (file.exists()) {
+                def props = new Properties()
+                file.withInputStream { props.load(it) }
+                def jpfCorePath = props.getProperty('jpf-core')
+                if (jpfCorePath) {
+                    // Resolve variables
+                    jpfCorePath = jpfCorePath.replace('${user.home}', System.getProperty('user.home'))
+                    jpfCorePath = jpfCorePath.replace('${jpf-core}', '')
+                    jpfCorePath = jpfCorePath.trim()
+                    
+                    if (jpfCorePath) {
+                        jpfCorePaths.add(jpfCorePath + '/build/libs')
+                        jpfCorePaths.add(jpfCorePath + '/build')
+                    }
+                }
+            }
+        }
+        
+        // Store the paths for use in repositories
+        project.ext.jpfCorePaths = jpfCorePaths
+    }
+}
+
 repositories {
     mavenCentral()
     flatDir {
+        // Get jpf-core paths from site.properties first
+        def sitePropertiesPaths = []
+        try {
+            def jpfCorePaths = project.ext.jpfCorePaths ?: []
+            sitePropertiesPaths = jpfCorePaths
+        } catch (Exception e) {
+            // If getJpfCorePaths task hasn't run, use empty list
+            sitePropertiesPaths = []
+        }
+        
         // Multiple possible locations for jpf-core JAR
         dirs = [
+            // Site.properties locations (highest priority)
+            *sitePropertiesPaths,
             // Default location (parent directory)
             '../jpf-core/build/libs',
             // Alternative locations
@@ -29,6 +77,15 @@ repositories {
             System.getProperty('jpf.core.path', '') + '/build/libs',
             System.getProperty('jpf.core.path', '') + '/build'
         ].findAll { it && new File(it).exists() }
+    }
+}
+
+// Ensure getJpfCorePaths runs before dependency resolution
+configurations.all {
+    resolutionStrategy {
+        beforeChange { 
+            getJpfCorePaths.execute()
+        }
     }
 }
 

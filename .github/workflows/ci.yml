@@ -50,6 +50,13 @@ jobs:
         cp build/jpf.jar build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
         ls -la build/libs/
     
+    - name: Create site.properties for CI
+      run: |
+        cd ../jpf-autodoc
+        echo "jpf-core = ../jpf-core" > site.properties
+        echo "Created site.properties:"
+        cat site.properties
+    
     - name: Verify jpf-core JAR exists
       run: |
         ls -la ../jpf-core/build/libs/
@@ -136,6 +143,13 @@ jobs:
         cp build/jpf.jar build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
         ls -la build/libs/
     
+    - name: Create site.properties for CI
+      run: |
+        cd ../jpf-autodoc
+        echo "jpf-core = ../jpf-core" > site.properties
+        echo "Created site.properties:"
+        cat site.properties
+    
     - name: Verify jpf-core JAR exists
       run: |
         ls -la ../jpf-core/build/libs/
@@ -204,6 +218,13 @@ jobs:
         mkdir -p build/libs
         cp build/jpf.jar build/libs/jpf-core-DEVELOPMENT-SNAPSHOT.jar
         ls -la build/libs/
+    
+    - name: Create site.properties for CI
+      run: |
+        cd ../jpf-autodoc
+        echo "jpf-core = ../jpf-core" > site.properties
+        echo "Created site.properties:"
+        cat site.properties
     
     - name: Verify jpf-core JAR exists
       run: |
