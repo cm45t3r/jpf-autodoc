@@ -34,6 +34,18 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
     
+    - name: Clone jpf-core
+      run: |
+        cd ..
+        git clone https://github.com/javapathfinder/jpf-core.git
+        cd jpf-core
+        chmod +x gradlew
+    
+    - name: Build jpf-core
+      run: |
+        cd ../jpf-core
+        ./gradlew buildJars
+    
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
@@ -75,6 +87,18 @@ jobs:
         distribution: 'temurin'
         cache: gradle
     
+    - name: Clone jpf-core
+      run: |
+        cd ..
+        git clone https://github.com/javapathfinder/jpf-core.git
+        cd jpf-core
+        chmod +x gradlew
+    
+    - name: Build jpf-core
+      run: |
+        cd ../jpf-core
+        ./gradlew buildJars
+    
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
@@ -108,6 +132,18 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
+    
+    - name: Clone jpf-core
+      run: |
+        cd ..
+        git clone https://github.com/javapathfinder/jpf-core.git
+        cd jpf-core
+        chmod +x gradlew
+    
+    - name: Build jpf-core
+      run: |
+        cd ../jpf-core
+        ./gradlew buildJars
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
