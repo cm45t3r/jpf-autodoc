@@ -226,6 +226,9 @@ output/
 !README.md
 !*.SUMMARY.md
 !CURRENT_STATUS.md
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+!SECURITY.md
 
 # Test output files
 test-output/
