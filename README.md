@@ -103,6 +103,12 @@ cd jpf-autodoc
 # Analyze type hierarchies
 ./bin/jpfautodoc -cp /path/to/jpf-core --types-only -o xml -f types.xml
 
+# Analyze from JAR file
+./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f config.md
+
+# Analyze from ZIP archive
+./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f types.xml
+
 # Full analysis with all output formats
 ./bin/jpfautodoc -cp /path/to/jpf-core --verbose --parallel 4 -o html -f docs.html
 
@@ -113,7 +119,7 @@ cd jpf-autodoc
 ## Command Line Options
 
 ### Basic Options
-- `-cp, --classpath <path>`: Classpath to analyze
+- `-cp, --classpath <path>`: Classpath to analyze (supports directories, JAR, ZIP, and other archive files)
 - `-o, --output-format <format>`: Output format (markdown, xml, json, html, text)
 - `-f, --output-file <file>`: Output file path
 - `--config-only`: Analyze only configuration options
@@ -144,6 +150,18 @@ cd jpf-autodoc
 ### Type Hierarchy Analysis
 ```bash
 ./bin/jpfautodoc -cp ../jpf-core/build/ --types-only -o xml -f jpf-types.xml
+```
+
+### Archive File Analysis
+```bash
+# Analyze from JAR file
+./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f jpf-config.md
+
+# Analyze from ZIP archive
+./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f jpf-types.xml
+
+# Analyze from directory containing archives
+./bin/jpfautodoc -cp /path/to/libs/ --verbose -o html -f analysis.html
 ```
 
 ### Full Analysis with Multiple Formats

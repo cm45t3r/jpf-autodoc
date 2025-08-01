@@ -5,11 +5,13 @@ import gov.nasa.jpf.autodoc.core.model.UnifiedAnalysisResult;
 import gov.nasa.jpf.autodoc.options.ConfigurationAnalyzer;
 import gov.nasa.jpf.autodoc.types.TypeHierarchyAnalyzer;
 import gov.nasa.jpf.autodoc.types.CrossReferenceAnalyzer;
+import gov.nasa.jpf.autodoc.core.ArchiveFileReader;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -80,8 +82,8 @@ public class DefaultAnalysisEngine implements AnalysisEngine {
         try {
             if (Files.isDirectory(sourcePath)) {
                 return analyzeDirectory(sourcePath, config);
-            } else if (source.endsWith(".jar")) {
-                return analyzeJar(sourcePath, config);
+            } else if (ArchiveFileReader.isArchiveFile(sourcePath)) {
+                return analyzeArchive(sourcePath, config);
             } else {
                 return analyzeFile(sourcePath, config);
             }
@@ -140,32 +142,31 @@ public class DefaultAnalysisEngine implements AnalysisEngine {
     private UnifiedAnalysisResult analyzeDirectory(Path dirPath, AnalysisConfig config) throws IOException {
         ClassFileSet files = new ClassFileSet();
         
-        try (Stream<Path> paths = Files.walk(dirPath)) {
-            paths.filter(path -> path.toString().endsWith(".class"))
-                 .forEach(path -> {
-                     try {
-                         ClassFile classFile = ClassFile.fromFile(path.toFile());
-                         if (shouldInclude(classFile, config)) {
-                             files.add(classFile);
-                         }
-                     } catch (IOException e) {
-                         // Log warning but continue
-                         System.err.println("Warning: Could not read class file: " + path);
-                     }
-                 });
+        // Use ArchiveFileReader to read both class files and archives from directory
+        List<ClassFile> classFiles = ArchiveFileReader.readFromDirectory(dirPath);
+        
+        for (ClassFile classFile : classFiles) {
+            if (shouldInclude(classFile, config)) {
+                files.add(classFile);
+            }
         }
         
         return analyze(files, config);
     }
     
-    private UnifiedAnalysisResult analyzeJar(Path jarPath, AnalysisConfig config) throws IOException {
+    private UnifiedAnalysisResult analyzeArchive(Path archivePath, AnalysisConfig config) throws IOException {
         ClassFileSet files = new ClassFileSet();
         
-        // TODO: Implement JAR file analysis
-        // This will require using java.util.jar.JarFile to read class files from JAR
-        System.err.println("Warning: JAR analysis not yet implemented");
+        // Use ArchiveFileReader to read class files from any supported archive format
+        List<ClassFile> classFiles = ArchiveFileReader.readFromArchive(archivePath);
         
-        return new UnifiedAnalysisResult(jarPath.toString(), config);
+        for (ClassFile classFile : classFiles) {
+            if (shouldInclude(classFile, config)) {
+                files.add(classFile);
+            }
+        }
+        
+        return analyze(files, config);
     }
     
     private UnifiedAnalysisResult analyzeFile(Path filePath, AnalysisConfig config) throws IOException {

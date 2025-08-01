@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 public class JPFAutoDocCLI implements Callable<Integer> {
     
     @Option(names = {"-cp", "--classpath"}, 
-            description = "Classpath to analyze (directory or JAR file)")
+            description = "Classpath to analyze (directory, JAR, ZIP, or other archive files)")
     private String classpath;
     
     @Option(names = {"-o", "--output"}, 
