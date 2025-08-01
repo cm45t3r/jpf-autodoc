@@ -17,7 +17,26 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK ${{ matrix.java }}
+    - name: Set up JDK 11 for jpf-core
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+    
+    - name: Clone jpf-core
+      run: |
+        cd ..
+        git clone https://github.com/javapathfinder/jpf-core.git
+        cd jpf-core
+        chmod +x gradlew
+    
+    - name: Build jpf-core with Java 11
+      run: |
+        cd ../jpf-core
+        ./gradlew buildJars
+    
+    - name: Set up JDK ${{ matrix.java }} for jpf-autodoc
       uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java }}
@@ -33,18 +52,6 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    
-    - name: Clone jpf-core
-      run: |
-        cd ..
-        git clone https://github.com/javapathfinder/jpf-core.git
-        cd jpf-core
-        chmod +x gradlew
-    
-    - name: Build jpf-core
-      run: |
-        cd ../jpf-core
-        ./gradlew buildJars
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
