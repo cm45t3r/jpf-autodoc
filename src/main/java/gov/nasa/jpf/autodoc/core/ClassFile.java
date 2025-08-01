@@ -23,7 +23,15 @@ public class ClassFile {
     }
     
     public static ClassFile fromFile(File file) throws IOException {
-        String className = file.getName().replace(".class", "");
+        // Convert file path to class name
+        String filePath = file.getAbsolutePath();
+        String className = filePath
+            .replace(".class", "")
+            .replaceAll(".*classes/", "") // Remove path up to classes directory
+            .replaceAll(".*build/", "") // Remove path up to build directory
+            .replace("/", ".")
+            .replace("\\", ".");
+        
         byte[] data = java.nio.file.Files.readAllBytes(file.toPath());
         return new ClassFile(className, data, file.toPath(), "file");
     }

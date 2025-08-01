@@ -114,7 +114,7 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/jpf-autodoc-1.0.0-SNAPSHOT.jar:$APP_HOME/lib/jackson-databind-2.15.2.jar:$APP_HOME/lib/jackson-core-2.15.2.jar:$APP_HOME/lib/jackson-annotations-2.15.2.jar:$APP_HOME/lib/jackson-dataformat-xml-2.15.2.jar:$APP_HOME/lib/picocli-4.7.3.jar:$APP_HOME/lib/woodstox-core-6.5.1.jar:$APP_HOME/lib/stax2-api-4.2.1.jar
+CLASSPATH=$APP_HOME/lib/jpf-autodoc.jar:$APP_HOME/lib/jackson-databind-2.15.2.jar:$APP_HOME/lib/jackson-core-2.15.2.jar:$APP_HOME/lib/jackson-annotations-2.15.2.jar:$APP_HOME/lib/jackson-dataformat-xml-2.15.2.jar:$APP_HOME/lib/picocli-4.7.3.jar:$APP_HOME/lib/jpf-core-DEVELOPMENT-SNAPSHOT.jar:$APP_HOME/lib/woodstox-core-6.5.1.jar:$APP_HOME/lib/stax2-api-4.2.1.jar
 
 
 # Determine the Java command to use to start the JVM.

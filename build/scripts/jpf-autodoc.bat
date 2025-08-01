@@ -70,7 +70,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\jpf-autodoc-1.0.0-SNAPSHOT.jar;%APP_HOME%\lib\jackson-databind-2.15.2.jar;%APP_HOME%\lib\jackson-core-2.15.2.jar;%APP_HOME%\lib\jackson-annotations-2.15.2.jar;%APP_HOME%\lib\jackson-dataformat-xml-2.15.2.jar;%APP_HOME%\lib\picocli-4.7.3.jar;%APP_HOME%\lib\woodstox-core-6.5.1.jar;%APP_HOME%\lib\stax2-api-4.2.1.jar
+set CLASSPATH=%APP_HOME%\lib\jpf-autodoc.jar;%APP_HOME%\lib\jackson-databind-2.15.2.jar;%APP_HOME%\lib\jackson-core-2.15.2.jar;%APP_HOME%\lib\jackson-annotations-2.15.2.jar;%APP_HOME%\lib\jackson-dataformat-xml-2.15.2.jar;%APP_HOME%\lib\picocli-4.7.3.jar;%APP_HOME%\lib\jpf-core-DEVELOPMENT-SNAPSHOT.jar;%APP_HOME%\lib\woodstox-core-6.5.1.jar;%APP_HOME%\lib\stax2-api-4.2.1.jar
 
 
 @rem Execute jpf-autodoc

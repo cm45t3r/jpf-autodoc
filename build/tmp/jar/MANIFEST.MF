@@ -2,5 +2,4 @@ Manifest-Version: 1.0
 Main-Class: gov.nasa.jpf.autodoc.cli.JPFAutoDocCLI
 Implementation-Title: JPF AutoDoc
 Implementation-Version: 1.0.0-SNAPSHOT
-Implementation-Vendor: NASA Ames Research Center
 

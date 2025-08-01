@@ -1,9 +1,11 @@
 package gov.nasa.jpf.autodoc.cli;
 
 import gov.nasa.jpf.autodoc.core.AnalysisEngine;
+import gov.nasa.jpf.autodoc.core.DefaultAnalysisEngine;
 import gov.nasa.jpf.autodoc.core.model.AnalysisConfig;
 import gov.nasa.jpf.autodoc.core.model.UnifiedAnalysisResult;
 import gov.nasa.jpf.autodoc.output.OutputGenerator;
+import gov.nasa.jpf.autodoc.output.ConsoleOutputGenerator;
 import gov.nasa.jpf.autodoc.output.OutputConfig;
 import gov.nasa.jpf.autodoc.output.OutputFormat;
 import picocli.CommandLine;
@@ -75,9 +77,9 @@ public class JPFAutoDocCLI implements Callable<Integer> {
     private final OutputGenerator outputGenerator;
     
     public JPFAutoDocCLI() {
-        // TODO: Initialize with actual implementations
-        this.analysisEngine = null; // new DefaultAnalysisEngine();
-        this.outputGenerator = null; // new DefaultOutputGenerator();
+        // Initialize with actual implementations
+        this.analysisEngine = new DefaultAnalysisEngine();
+        this.outputGenerator = new ConsoleOutputGenerator();
     }
     
     @Override
@@ -88,18 +90,6 @@ public class JPFAutoDocCLI implements Callable<Integer> {
             
             // Validate inputs
             if (!validateInputs()) {
-                return 1;
-            }
-            
-            // Check if analysis engines are implemented
-            if (analysisEngine == null) {
-                System.err.println("Error: Analysis engines not yet implemented.");
-                System.err.println("This is a Phase 1 release with CLI framework only.");
-                System.err.println("Analysis capabilities will be available in Phase 2.");
-                System.err.println();
-                System.err.println("You can test the CLI framework with:");
-                System.err.println("  ./bin/jpfautodoc --help");
-                System.err.println("  ./bin/jpfautodoc --version");
                 return 1;
             }
             

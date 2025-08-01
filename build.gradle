@@ -10,9 +10,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-version = '1.0.0-SNAPSHOT'
-group = 'gov.nasa.jpf'
-
 application {
     mainClass = 'gov.nasa.jpf.autodoc.cli.JPFAutoDocCLI'
 }
@@ -29,18 +26,17 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'info.picocli:picocli:4.7.3'
-    
-    // JPF dependencies (optional for now)
-    // implementation files('../jpf-core/build/libs/jpf.jar')
-    // implementation files('../jpf-core/build/libs/jpf-classes.jar')
-    
+
+    // JPF dependencies
+    implementation name: 'jpf-core-DEVELOPMENT-SNAPSHOT'
+
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.mockito:mockito-core:5.3.1'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
@@ -49,8 +45,8 @@ tasks.named('test') {
 
 jacocoTestReport {
     reports {
-        xml.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        xml.required = true
+        html.required = true
     }
 }
 
@@ -59,25 +55,19 @@ jar {
         attributes(
             'Main-Class': 'gov.nasa.jpf.autodoc.cli.JPFAutoDocCLI',
             'Implementation-Title': 'JPF AutoDoc',
-            'Implementation-Version': version,
-            'Implementation-Vendor': 'NASA Ames Research Center'
+            'Implementation-Version': '1.0.0-SNAPSHOT'
         )
     }
 }
 
-// Create executable JAR with dependencies
 task createExecutableJar(type: Jar) {
     archiveClassifier = 'executable'
-    from sourceSets.main.output
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
-    }
     manifest {
         attributes 'Main-Class': 'gov.nasa.jpf.autodoc.cli.JPFAutoDocCLI'
     }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-// Make build depend on executable JAR
-build.dependsOn createExecutableJar 
+} 

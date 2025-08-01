@@ -84,8 +84,49 @@ public class UnifiedAnalysisResult {
         crossReferences.put(crossRef.getId(), crossRef);
     }
     
-    public void setValidationReport(ValidationReport report) {
+    public void addValidationReport(ValidationReport report) {
         this.validationReport = report;
+    }
+    
+    /**
+     * Merges another analysis result into this one.
+     * Combines all data from the other result with this result.
+     */
+    public void merge(UnifiedAnalysisResult other) {
+        // Merge configuration options
+        configOptions.putAll(other.configOptions);
+        
+        // Merge configuration annotations
+        configAnnotations.putAll(other.configAnnotations);
+        
+        // Merge choice generators
+        choiceGenerators.putAll(other.choiceGenerators);
+        
+        // Merge loggers
+        loggers.putAll(other.loggers);
+        
+        // Merge types
+        types.putAll(other.types);
+        
+        // Merge model classes
+        modelClasses.putAll(other.modelClasses);
+        
+        // Merge native peers
+        nativePeers.putAll(other.nativePeers);
+        
+        // Merge listeners
+        listeners.putAll(other.listeners);
+        
+        // Merge cross references
+        crossReferences.putAll(other.crossReferences);
+        
+        // Merge validation reports (keep the one with more issues)
+        if (other.validationReport != null) {
+            if (this.validationReport == null || 
+                other.validationReport.getIssues().size() > this.validationReport.getIssues().size()) {
+                this.validationReport = other.validationReport;
+            }
+        }
     }
     
     // Getters
