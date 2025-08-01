@@ -17,7 +17,9 @@ JPF AutoDoc is a modern, unified tool that replaces the functionality of both `j
 
 **Phase 1 Complete ✅**: Foundation and CLI framework are implemented and working.
 
-**Phase 2 In Progress 🔄**: Core analysis engines are being implemented.
+**Phase 2 Complete ✅**: Core analysis engines are implemented and working.
+
+**Phase 3 In Progress 🔄**: Advanced output generators are being implemented.
 
 ### What Works Now
 - ✅ Project builds successfully with Gradle
@@ -25,12 +27,17 @@ JPF AutoDoc is a modern, unified tool that replaces the functionality of both `j
 - ✅ Core data models and interfaces
 - ✅ Test framework with 100% coverage
 - ✅ Executable JAR generation
+- ✅ **Analysis engines process JPF class files**
+- ✅ **Configuration options extracted from bytecode**
+- ✅ **Type hierarchies analyzed and categorized**
+- ✅ **Cross-references identified between components**
+- ✅ **Parallel processing for improved performance**
 
 ### What's Coming Next
-- 🔄 Configuration analysis engine
-- 🔄 Type hierarchy analysis engine
-- 🔄 Output generators (Markdown, XML, etc.)
-- 🔄 JPF framework integration
+- 🔄 Advanced output generators (Markdown, XML, JSON, HTML)
+- 🔄 JAR file processing support
+- 🔄 Enhanced bytecode analysis using JPF framework
+- 🔄 Performance optimizations and caching
 
 ## Features
 
@@ -121,27 +128,20 @@ cd jpf-autodoc
 # Show version (works now!)
 ./bin/jpfautodoc --version
 
-# Test CLI parsing with classpath (works now!)
-./bin/jpfautodoc -cp /path/to/jpf-core --config-only -o markdown -f test.md
-# Output: Error: Analysis engines not yet implemented.
-#         This is a Phase 1 release with CLI framework only.
-#         Analysis capabilities will be available in Phase 2.
+# Test configuration analysis (works now!)
+./bin/jpfautodoc -cp ../jpf-core/build/ --config-only ../jpf-core/build/classes/gov/nasa/jpf/EventProducer.class
+
+# Test type hierarchy analysis (works now!)
+./bin/jpfautodoc -cp ../jpf-core/build/ --types-only ../jpf-core/build/classes/gov/nasa/jpf/
+
+# Test combined analysis (works now!)
+./bin/jpfautodoc -cp ../jpf-core/build/ --config-only --types-only ../jpf-core/build/classes/
 
 # Test with verbose output (works now!)
-./bin/jpfautodoc -cp /path/to/jpf-core --verbose --parallel 4
-# Output: Error: Analysis engines not yet implemented.
-#         This is a Phase 1 release with CLI framework only.
-#         Analysis capabilities will be available in Phase 2.
+./bin/jpfautodoc -cp ../jpf-core/build/ --verbose --config-only ../jpf-core/build/classes/
 
-# Test complex CLI options (works now!)
-./bin/jpfautodoc -cp /path/to/jpf-core --validate --include "gov.nasa.jpf.*" --exclude ".*Test.*" -o xml -f output.xml
-# Output: Error: Analysis engines not yet implemented.
-#         This is a Phase 1 release with CLI framework only.
-#         Analysis capabilities will be available in Phase 2.
-
-# Test error handling (works now!)
-./bin/jpfautodoc --config-only -o markdown
-# Output: Error: Classpath is required. Use -cp or --classpath.
+# Run the demo script to see all CLI features in action
+./demo-cli.sh
 ```
 
 ### Coming Soon Examples

@@ -5,7 +5,7 @@ import gov.nasa.jpf.autodoc.core.DefaultAnalysisEngine;
 import gov.nasa.jpf.autodoc.core.model.AnalysisConfig;
 import gov.nasa.jpf.autodoc.core.model.UnifiedAnalysisResult;
 import gov.nasa.jpf.autodoc.output.OutputGenerator;
-import gov.nasa.jpf.autodoc.output.ConsoleOutputGenerator;
+import gov.nasa.jpf.autodoc.output.OutputGeneratorFactory;
 import gov.nasa.jpf.autodoc.output.OutputConfig;
 import gov.nasa.jpf.autodoc.output.OutputFormat;
 import picocli.CommandLine;
@@ -79,7 +79,7 @@ public class JPFAutoDocCLI implements Callable<Integer> {
     public JPFAutoDocCLI() {
         // Initialize with actual implementations
         this.analysisEngine = new DefaultAnalysisEngine();
-        this.outputGenerator = new ConsoleOutputGenerator();
+        this.outputGenerator = null; // Will be selected based on output format
     }
     
     @Override
@@ -90,6 +90,14 @@ public class JPFAutoDocCLI implements Callable<Integer> {
             
             // Validate inputs
             if (!validateInputs()) {
+                return 1;
+            }
+            
+            // Get output generator for the specified format
+            OutputGenerator generator = OutputGeneratorFactory.getGenerator(outputFormat);
+            if (generator == null) {
+                System.err.println("Error: Unsupported output format: " + outputFormat);
+                System.err.println("Supported formats: " + java.util.Arrays.toString(OutputGeneratorFactory.getSupportedFormats()));
                 return 1;
             }
             
@@ -111,7 +119,7 @@ public class JPFAutoDocCLI implements Callable<Integer> {
                 }
                 
                 // Generate output
-                generateOutput(result, target);
+                generateOutput(result, target, generator);
                 
                 // Print summary
                 printSummary(result);
@@ -178,19 +186,23 @@ public class JPFAutoDocCLI implements Callable<Integer> {
         return true;
     }
     
-    private void generateOutput(UnifiedAnalysisResult result, String target) {
+    private void generateOutput(UnifiedAnalysisResult result, String target, OutputGenerator generator) {
         try {
-            String fileName = outputFile != null ? outputFile : generateDefaultFileName(target, outputFormat);
+            // Build output configuration
+            OutputConfig.Builder outputConfigBuilder = OutputConfig.builder()
+                .format(outputFormat)
+                .verbose(verbose);
             
-            OutputConfig config = OutputConfig.builder()
-                    .outputFile(fileName)
-                    .format(outputFormat)
-                    .verbose(verbose)
-                    .build();
+            if (outputFile != null) {
+                outputConfigBuilder.outputFile(outputFile);
+            }
             
-            outputGenerator.generate(result, config);
+            OutputConfig outputConfig = outputConfigBuilder.build();
             
-            System.out.println("Output generated: " + fileName);
+            // Generate output
+            generator.generate(result, outputConfig);
+            
+            System.out.println("Output generated: " + (outputFile != null ? outputFile : "default filename"));
             
         } catch (Exception e) {
             System.err.println("Error generating output: " + e.getMessage());
