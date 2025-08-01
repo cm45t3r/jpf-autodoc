@@ -30,11 +30,24 @@ jobs:
         git clone https://github.com/javapathfinder/jpf-core.git
         cd jpf-core
         chmod +x gradlew
+        ls -la
     
     - name: Build jpf-core with Java 11
       run: |
         cd ../jpf-core
-        ./gradlew buildJars
+        pwd
+        ls -la
+        ./gradlew buildJars --info
+    
+    - name: Check jpf-core build output
+      run: |
+        cd ../jpf-core
+        echo "=== Build directory contents ==="
+        ls -la build/
+        echo "=== Libs directory contents ==="
+        ls -la build/libs/ || echo "Libs directory does not exist"
+        echo "=== Gradle build info ==="
+        ./gradlew tasks --all | grep -E "(buildJars|jar|create)" || echo "No relevant tasks found"
     
     - name: Verify jpf-core JAR exists
       run: |
@@ -105,11 +118,24 @@ jobs:
         git clone https://github.com/javapathfinder/jpf-core.git
         cd jpf-core
         chmod +x gradlew
+        ls -la
     
     - name: Build jpf-core
       run: |
         cd ../jpf-core
-        ./gradlew buildJars
+        pwd
+        ls -la
+        ./gradlew buildJars --info
+    
+    - name: Check jpf-core build output
+      run: |
+        cd ../jpf-core
+        echo "=== Build directory contents ==="
+        ls -la build/
+        echo "=== Libs directory contents ==="
+        ls -la build/libs/ || echo "Libs directory does not exist"
+        echo "=== Gradle build info ==="
+        ./gradlew tasks --all | grep -E "(buildJars|jar|create)" || echo "No relevant tasks found"
     
     - name: Verify jpf-core JAR exists
       run: |
@@ -156,11 +182,24 @@ jobs:
         git clone https://github.com/javapathfinder/jpf-core.git
         cd jpf-core
         chmod +x gradlew
+        ls -la
     
     - name: Build jpf-core
       run: |
         cd ../jpf-core
-        ./gradlew buildJars
+        pwd
+        ls -la
+        ./gradlew buildJars --info
+    
+    - name: Check jpf-core build output
+      run: |
+        cd ../jpf-core
+        echo "=== Build directory contents ==="
+        ls -la build/
+        echo "=== Libs directory contents ==="
+        ls -la build/libs/ || echo "Libs directory does not exist"
+        echo "=== Gradle build info ==="
+        ./gradlew tasks --all | grep -E "(buildJars|jar|create)" || echo "No relevant tasks found"
     
     - name: Verify jpf-core JAR exists
       run: |
