@@ -294,7 +294,7 @@ cd jpf-autodoc
 
 ## License
 
-This project is part of the Java PathFinder (JPF) project and follows the same licensing terms.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
