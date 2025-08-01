@@ -7,7 +7,7 @@ This document provides examples of how to use the JPF AutoDoc tool.
 ### Analyze JPF Core
 ```bash
 # Analyze JPF core with both configurations and types
-./bin/jpfautodoc -cp ../jpf-core/build/ -o markdown -f jpf-complete.md
+./bin/jpfautodoc -cp ../jpf-core/build/ -o markdown -f jpf-complete.md ../jpf-core/build/
 
 # Output: Comprehensive documentation including all configuration options and type hierarchies
 ```
@@ -15,7 +15,7 @@ This document provides examples of how to use the JPF AutoDoc tool.
 ### Configuration Analysis Only
 ```bash
 # Analyze only configuration options
-./bin/jpfautodoc -cp ../jpf-core/build/ --config-only -o xml -f config.xml
+./bin/jpfautodoc -cp ../jpf-core/build/ --config-only -o xml -f config.xml ../jpf-core/build/
 
 # Output: XML file with all JPF configuration options, annotations, and choice generators
 ```
@@ -23,7 +23,7 @@ This document provides examples of how to use the JPF AutoDoc tool.
 ### Type Hierarchy Analysis Only
 ```bash
 # Analyze only type hierarchies
-./bin/jpfautodoc -cp ../jpf-core/build/ --types-only -o markdown -f types.md
+./bin/jpfautodoc -cp ../jpf-core/build/ --types-only -o markdown -f types.md ../jpf-core/build/
 
 # Output: Markdown file with listener, instruction factory, and native peer hierarchies
 ```
@@ -33,22 +33,34 @@ This document provides examples of how to use the JPF AutoDoc tool.
 ### Parallel Processing
 ```bash
 # Use 8 parallel threads for faster analysis
-./bin/jpfautodoc -cp ../jpf-core/build/ --parallel 8 -o markdown -f jpf-fast.md
+./bin/jpfautodoc -cp ../jpf-core/build/ --parallel 8 -o markdown -f jpf-fast.md ../jpf-core/build/
 ```
 
 ### Pattern Filtering
 ```bash
 # Analyze only listener classes
-./bin/jpfautodoc -cp ../jpf-core/build/ --include "gov.nasa.jpf.listener.*" -o markdown
+./bin/jpfautodoc -cp ../jpf-core/build/ --include "gov.nasa.jpf.listener.*" -o markdown ../jpf-core/build/
 
 # Exclude test classes
-./bin/jpfautodoc -cp ../jpf-core/build/ --exclude ".*Test.*" -o markdown
+./bin/jpfautodoc -cp ../jpf-core/build/ --exclude ".*Test.*" -o markdown ../jpf-core/build/
 ```
 
 ### Validation
 ```bash
 # Enable validation to check for inconsistencies
-./bin/jpfautodoc -cp ../jpf-core/build/ --validate -o markdown -f jpf-validated.md
+./bin/jpfautodoc -cp ../jpf-core/build/ --validate -o markdown -f jpf-validated.md ../jpf-core/build/
+```
+
+### Archive Analysis
+```bash
+# Analyze from JAR file
+./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f config.md jpf-core.jar
+
+# Analyze from ZIP archive
+./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f types.xml jpf-core.zip
+
+# Analyze from directory containing archives
+./bin/jpfautodoc -cp /path/to/libs/ --verbose -o html -f analysis.html /path/to/libs/
 ```
 
 ## Output Formats
@@ -127,6 +139,81 @@ This document provides examples of how to use the JPF AutoDoc tool.
 </jpf-analysis>
 ```
 
+### JSON Output
+```json
+{
+  "metadata": {
+    "analysisDate": "2024-01-15T10:30:00Z",
+    "sourcePath": "../jpf-core/build/",
+    "configOptionsCount": 45,
+    "typesCount": 23
+  },
+  "configOptions": [
+    {
+      "name": "log.level",
+      "className": "gov.nasa.jpf.Config",
+      "type": "String",
+      "defaultValue": "info",
+      "description": "Logging level for JPF",
+      "hasImplementation": true,
+      "hasAnnotation": true
+    }
+  ],
+  "types": [
+    {
+      "name": "gov.nasa.jpf.listener.DeadlockAnalyzer",
+      "type": "Listener",
+      "superclass": "gov.nasa.jpf.JPFListener",
+      "interfaces": [],
+      "methods": [
+        "void instructionExecuted(ThreadInfo, Instruction, Instruction)",
+        "void threadStarted(ThreadInfo)"
+      ]
+    }
+  ]
+}
+```
+
+### HTML Output
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JPF AutoDoc Analysis</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .config-option { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .type { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .metadata { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>JPF AutoDoc Analysis</h1>
+    <div class="metadata">
+        <p><strong>Analysis Date:</strong> 2024-01-15T10:30:00Z</p>
+        <p><strong>Source Path:</strong> ../jpf-core/build/</p>
+        <p><strong>Config Options:</strong> 45</p>
+        <p><strong>Types:</strong> 23</p>
+    </div>
+    
+    <h2>Configuration Options</h2>
+    <div class="config-option">
+        <h3>log.level</h3>
+        <p><strong>Type:</strong> String</p>
+        <p><strong>Default:</strong> info</p>
+        <p><strong>Description:</strong> Logging level for JPF</p>
+    </div>
+    
+    <h2>Type Hierarchy</h2>
+    <div class="type">
+        <h3>gov.nasa.jpf.listener.DeadlockAnalyzer</h3>
+        <p><strong>Type:</strong> Listener</p>
+        <p><strong>Superclass:</strong> gov.nasa.jpf.JPFListener</p>
+    </div>
+</body>
+</html>
+```
+
 ## Expected Output Structure
 
 ### Configuration Analysis
@@ -184,7 +271,13 @@ This document provides examples of how to use the JPF AutoDoc tool.
    ```
    Solution: Ensure the classpath contains compiled .class files
 
-3. **Memory issues**
+3. **Target not specified**
+   ```
+   Error: No targets specified. Use --help for usage information.
+   ```
+   Solution: Provide the target path as the last argument
+
+4. **Memory issues**
    ```
    java.lang.OutOfMemoryError
    ```
@@ -193,5 +286,11 @@ This document provides examples of how to use the JPF AutoDoc tool.
 ### Debug Mode
 ```bash
 # Enable verbose output for debugging
-./bin/jpfautodoc -cp ../jpf-core/build/ --verbose -o markdown
+./bin/jpfautodoc -cp ../jpf-core/build/ --verbose -o markdown ../jpf-core/build/
+```
+
+### Validation Mode
+```bash
+# Enable validation to check for issues
+./bin/jpfautodoc -cp ../jpf-core/build/ --validate -o markdown ../jpf-core/build/
 ``` 
