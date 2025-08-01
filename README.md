@@ -21,32 +21,7 @@ JPF AutoDoc is a modern, unified tool that replaces the functionality of both `j
 - **Comprehensive Testing**: Unit, integration, and output validation tests
 - **Advanced Caching**: Intelligent output caching with memory management
 - **Multiple Output Formats**: Markdown, XML, JSON, HTML, and Console output
-
-## Current Status
-
-**Phase 1-5 Complete ✅**: All development phases are complete and the system is production-ready.
-
-### What Works Now
-- ✅ **Project builds successfully with Gradle**
-- ✅ **CLI framework with all options and help system**
-- ✅ **Core data models and interfaces**
-- ✅ **Comprehensive test suite (41 tests, 100% pass rate)**
-- ✅ **Executable JAR generation**
-- ✅ **Analysis engines process JPF class files**
-- ✅ **Configuration options extracted from bytecode**
-- ✅ **Type hierarchies analyzed and categorized**
-- ✅ **Cross-references identified between components**
-- ✅ **Parallel processing for improved performance**
-- ✅ **Multiple output generators (Markdown, XML, JSON, HTML, Console)**
-- ✅ **Intelligent caching system with memory management**
-- ✅ **Performance optimization for large datasets**
-- ✅ **Comprehensive validation and error handling**
-
-### Performance Benchmarks
-- ✅ **Concurrent Generation**: < 10 seconds for 4 output formats
-- ✅ **Large Dataset Handling**: < 15 seconds for 500+ configuration options
-- ✅ **Memory Usage**: Efficient handling of large datasets
-- ✅ **Cache Performance**: Intelligent caching with configurable limits
+- **Archive Support**: Read class files from JAR, ZIP, and other archive formats
 
 ## Features
 
@@ -75,6 +50,7 @@ JPF AutoDoc is a modern, unified tool that replaces the functionality of both `j
 - **Memory Optimization**: Efficient handling of large datasets
 - **Performance Monitoring**: Built-in timing and metrics
 - **Validation Reports**: Comprehensive validation with detailed reporting
+- **Archive Analysis**: Support for JAR, ZIP, and other archive formats
 
 ## Quick Start
 
@@ -86,7 +62,7 @@ JPF AutoDoc is a modern, unified tool that replaces the functionality of both `j
 ### Building
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/cm45t3r/jpf-autodoc.git
 cd jpf-autodoc
 
 # Build the project
@@ -105,40 +81,39 @@ cd jpf-autodoc
 ./bin/jpfautodoc --version
 
 # Analyze JPF configuration options
-./bin/jpfautodoc -cp /path/to/jpf-core --config-only -o markdown -f config.md
+./bin/jpfautodoc -cp /path/to/jpf-core --config-only -o markdown -f config.md /path/to/jpf-core
 
 # Analyze type hierarchies
-./bin/jpfautodoc -cp /path/to/jpf-core --types-only -o xml -f types.xml
+./bin/jpfautodoc -cp /path/to/jpf-core --types-only -o xml -f types.xml /path/to/jpf-core
 
 # Analyze from JAR file
-./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f config.md
+./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f config.md jpf-core.jar
 
 # Analyze from ZIP archive
-./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f types.xml
+./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f types.xml jpf-core.zip
 
 # Full analysis with all output formats
-./bin/jpfautodoc -cp /path/to/jpf-core --verbose --parallel 4 -o html -f docs.html
+./bin/jpfautodoc -cp /path/to/jpf-core --verbose --parallel 4 -o html -f docs.html /path/to/jpf-core
 
-# Run with caching enabled
-./bin/jpfautodoc -cp /path/to/jpf-core --cache-enabled --parallel 4
+# Run with validation enabled
+./bin/jpfautodoc -cp /path/to/jpf-core --validate --parallel 4 /path/to/jpf-core
 ```
 
 ## Command Line Options
 
 ### Basic Options
 - `-cp, --classpath <path>`: Classpath to analyze (supports directories, JAR, ZIP, and other archive files)
-- `-o, --output-format <format>`: Output format (markdown, xml, json, html, text)
-- `-f, --output-file <file>`: Output file path
+- `-o, --output <format>`: Output format (markdown, xml, json, html, text)
+- `-f, --file <file>`: Output file path
 - `--config-only`: Analyze only configuration options
 - `--types-only`: Analyze only type hierarchies
 - `--verbose`: Include detailed metadata in output
 
 ### Advanced Options
 - `--parallel <threads>`: Number of parallel threads (default: number of processors)
-- `--cache-enabled`: Enable output caching
-- `--include-validation`: Include validation reports in output
-- `--include-cross-references`: Include cross-reference analysis
-- `--memory-limit <mb>`: Memory limit for caching (default: 100MB)
+- `--validate`: Enable validation reports in output
+- `--include <patterns>`: Include pattern for class names
+- `--exclude <patterns>`: Exclude pattern for class names
 
 ### Output Formats
 - `markdown`: Comprehensive markdown documentation
@@ -151,24 +126,24 @@ cd jpf-autodoc
 
 ### Basic Configuration Analysis
 ```bash
-./bin/jpfautodoc -cp ../jpf-core/build/ --config-only -o markdown -f jpf-config.md
+./bin/jpfautodoc -cp ../jpf-core/build/ --config-only -o markdown -f jpf-config.md ../jpf-core/build/
 ```
 
 ### Type Hierarchy Analysis
 ```bash
-./bin/jpfautodoc -cp ../jpf-core/build/ --types-only -o xml -f jpf-types.xml
+./bin/jpfautodoc -cp ../jpf-core/build/ --types-only -o xml -f jpf-types.xml ../jpf-core/build/
 ```
 
 ### Archive File Analysis
 ```bash
 # Analyze from JAR file
-./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f jpf-config.md
+./bin/jpfautodoc -cp jpf-core.jar --config-only -o markdown -f jpf-config.md jpf-core.jar
 
 # Analyze from ZIP archive
-./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f jpf-types.xml
+./bin/jpfautodoc -cp jpf-core.zip --types-only -o xml -f jpf-types.xml jpf-core.zip
 
 # Analyze from directory containing archives
-./bin/jpfautodoc -cp /path/to/libs/ --verbose -o html -f analysis.html
+./bin/jpfautodoc -cp /path/to/libs/ --verbose -o html -f analysis.html /path/to/libs/
 ```
 
 ### Full Analysis with Multiple Formats
@@ -178,17 +153,17 @@ cd jpf-autodoc
   -o markdown -f jpf-analysis.md \
   -o xml -f jpf-analysis.xml \
   -o json -f jpf-analysis.json \
-  -o html -f jpf-analysis.html
+  -o html -f jpf-analysis.html \
+  ../jpf-core/build/
 ```
 
 ### Performance Optimized Analysis
 ```bash
 ./bin/jpfautodoc -cp ../jpf-core/build/ \
-  --cache-enabled \
   --parallel 8 \
-  --memory-limit 500 \
   --verbose \
-  -o markdown -f jpf-analysis.md
+  -o markdown -f jpf-analysis.md \
+  ../jpf-core/build/
 ```
 
 ## Architecture
@@ -199,6 +174,7 @@ cd jpf-autodoc
 3. **Validation System**: Comprehensive validation and reporting
 4. **Caching System**: Performance optimization with intelligent caching
 5. **Testing Framework**: Comprehensive test coverage
+6. **Archive Reader**: Support for JAR, ZIP, and other archive formats
 
 ### Modern Technologies
 - **Java 11**: Modern Java features and performance
@@ -235,6 +211,7 @@ cd jpf-autodoc
   - Output Generator Tests: 9 tests
   - Output Integration Tests: 6 tests
   - Output Performance Tests: 7 tests
+  - Archive Reader Tests: 4 tests
 
 ## Performance
 
@@ -258,7 +235,7 @@ cd jpf-autodoc
 ant -f build.xml -Dclasspath=/path/to/jpf-core
 
 # New approach
-./bin/jpfautodoc -cp /path/to/jpf-core --config-only -o xml -f options.xml
+./bin/jpfautodoc -cp /path/to/jpf-core --config-only -o xml -f options.xml /path/to/jpf-core
 ```
 
 ### From jpf-autodoc-types
@@ -267,14 +244,14 @@ ant -f build.xml -Dclasspath=/path/to/jpf-core
 ant -f build.xml -Dclasspath=/path/to/jpf-core
 
 # New approach
-./bin/jpfautodoc -cp /path/to/jpf-core --types-only -o xml -f types.xml
+./bin/jpfautodoc -cp /path/to/jpf-core --types-only -o xml -f types.xml /path/to/jpf-core
 ```
 
 ## Development
 
 ### Building from Source
 ```bash
-git clone <repository-url>
+git clone https://github.com/cm45t3r/jpf-autodoc.git
 cd jpf-autodoc
 ./gradlew build
 ```
