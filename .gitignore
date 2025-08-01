@@ -229,6 +229,7 @@ output/
 !CONTRIBUTING.md
 !CODE_OF_CONDUCT.md
 !SECURITY.md
+!src/**/*.md
 
 # Test output files
 test-output/
@@ -236,8 +237,6 @@ test-output/
 *.xml
 *.json
 *.html
-*.md
-!src/**/*.md
 
 # Temporary files
 temp/
