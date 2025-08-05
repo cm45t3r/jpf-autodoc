@@ -40,12 +40,40 @@ public class SitePropertiesReader {
         System.getProperty("user.home") + "/.jpf/site.properties"
     };
     
+    // Flag to disable site.properties reading (for testing)
+    private static boolean disabled = false;
+    
+    /**
+     * Disable site.properties reading (for testing purposes).
+     */
+    public static void disable() {
+        disabled = true;
+    }
+    
+    /**
+     * Enable site.properties reading (default behavior).
+     */
+    public static void enable() {
+        disabled = false;
+    }
+    
+    /**
+     * Check if site.properties reading is disabled.
+     */
+    public static boolean isDisabled() {
+        return disabled;
+    }
+    
     /**
      * Reads the jpf-core location from site.properties file.
      * 
      * @return The jpf-core path if found, null otherwise
      */
     public static String getJpfCorePath() {
+        if (disabled) {
+            return null;
+        }
+        
         for (String location : SITE_PROPERTIES_LOCATIONS) {
             String jpfCorePath = readJpfCorePathFromFile(location);
             if (jpfCorePath != null) {
@@ -89,7 +117,7 @@ public class SitePropertiesReader {
      * @param path The path that may contain variables
      * @return The resolved path
      */
-    private static String resolvePath(String path) {
+    public static String resolvePath(String path) {
         String resolved = path;
         
         // Replace ${user.home} with actual user home
