@@ -1,11 +1,11 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-JAR_FILE="$SCRIPT_DIR/../build/libs/jpf-autodoc-executable.jar"
+JAR_FILE="$SCRIPT_DIR/../build/libs/jpf-autodoc-1.0.0-SNAPSHOT-executable.jar"
 
 if [ ! -f "$JAR_FILE" ]; then
     echo "Error: JAR file not found. Please build the project first."
-    echo "Run: ./gradlew build"
+    echo "Run: ./gradlew createExecutableJar"
     exit 1
 fi
 
