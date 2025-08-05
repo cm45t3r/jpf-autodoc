@@ -75,24 +75,32 @@ def getJpfCorePathsFromSiteProperties() {
 
 repositories {
     mavenCentral()
-    flatDir {
-        // Get jpf-core paths from site.properties first (optional)
-        def sitePropertiesPaths = getJpfCorePathsFromSiteProperties()
-        
-        // Multiple possible locations for jpf-core JAR
-        dirs = [
-            // Site.properties locations (highest priority, if available)
-            *sitePropertiesPaths,
-            // Default location (parent directory)
-            '../jpf-core/build/libs',
-            // Alternative locations
-            '../jpf-core/build',
-            './jpf-core/build/libs',
-            './jpf-core/build',
-            // Custom location via system property
-            System.getProperty('jpf.core.path', '') + '/build/libs',
-            System.getProperty('jpf.core.path', '') + '/build'
-        ].findAll { it && new File(it).exists() }
+    mavenLocal()
+    
+    // Use maven repository for local dependencies instead of flatDir
+    def sitePropertiesPaths = getJpfCorePathsFromSiteProperties()
+    if (!sitePropertiesPaths.isEmpty()) {
+        maven {
+            url = uri(sitePropertiesPaths.first())
+            name = 'jpf-core-local'
+        }
+    }
+    
+    // Fallback to local directories if needed
+    def localDirs = [
+        '../jpf-core/build/libs',
+        '../jpf-core/build',
+        './jpf-core/build/libs',
+        './jpf-core/build',
+        System.getProperty('jpf.core.path', '') + '/build/libs',
+        System.getProperty('jpf.core.path', '') + '/build'
+    ].findAll { it && new File(it).exists() }
+    
+    if (!localDirs.isEmpty()) {
+        maven {
+            url = uri(localDirs.first())
+            name = 'jpf-core-fallback'
+        }
     }
 }
 
@@ -100,17 +108,12 @@ dependencies {
     // Core dependencies
     implementation 'info.picocli:picocli:4.7.3'
 
-    // Optional Jackson dependencies for enhanced output formats
-    // These are optional and the build will work without them
-    compileOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
-    compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    // Jackson dependencies for enhanced output formats
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     
-    // Runtime dependencies for Jackson (only if available)
-    runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
-    runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-
     // JPF dependencies (optional - build will work without jpf-core)
-    compileOnly name: 'jpf-core-DEVELOPMENT-SNAPSHOT'
+    // compileOnly 'gov.nasa.jpf:jpf-core:DEV-SNAPSHOT'
 
     // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
