@@ -3,7 +3,7 @@
 [![CI](https://github.com/cm45t3r/jpf-autodoc/workflows/CI/badge.svg)](https://github.com/cm45t3r/jpf-autodoc/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Java](https://img.shields.io/badge/Java-11%2B-blue.svg)](https://openjdk.java.net/)
-[![Gradle](https://img.shields.io/badge/Gradle-7.0%2B-blue.svg)](https://gradle.org/)
+[![Gradle](https://img.shields.io/badge/Gradle-8.0%2B%20%7C%209.0%20Compatible-blue.svg)](https://gradle.org/)
 [![Tests](https://img.shields.io/badge/Tests-41%2F41%20passing-brightgreen.svg)](https://github.com/cm45t3r/jpf-autodoc/actions)
 [![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](https://codecov.io/gh/cm45t3r/jpf-autodoc)
 
@@ -55,9 +55,21 @@ JPF AutoDoc is a modern, unified tool that replaces the functionality of both `j
 ## Quick Start
 
 ### Prerequisites
-- Java 11 or higher
-- Gradle 7.0 or higher
-- JPF Core (for analysis)
+- **Java 11+**: For compilation and runtime
+- **Java 17+**: For Gradle 9.0 compatibility (daemon only)
+- **Gradle 8.0+**: For building and dependency management (9.0 compatible)
+- **JPF Core**: Optional, for enhanced analysis capabilities
+
+#### Gradle 9.0 Compatibility Setup
+```bash
+# Automatic setup (recommended)
+./setup-gradle.sh
+
+# Verify configuration
+./gradlew checkGradleCompatibility
+```
+
+For detailed setup instructions, see [README_GRADLE_SETUP.md](README_GRADLE_SETUP.md).
 
 ### Building
 ```bash

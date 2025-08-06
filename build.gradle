@@ -30,6 +30,11 @@ description = 'Unified JPF documentation generation tool'
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+    
+    // Use Java 11 toolchain for compilation (compatible with Gradle 9.0)
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
 
 application {
@@ -155,4 +160,47 @@ task createExecutableJar(type: Jar) {
     }
     with jar
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Task to check Gradle 9.0 compatibility
+task checkGradleCompatibility {
+    group = 'verification'
+    description = 'Checks Gradle 9.0 compatibility and Java toolchain configuration'
+    
+    doLast {
+        println "🔍 Gradle 9.0 Compatibility Check"
+        println "================================="
+        
+        // Check Gradle version
+        def gradleVersion = gradle.gradleVersion
+        println "📦 Gradle Version: $gradleVersion"
+        
+        // Check JVM versions
+        def runtimeJava = System.getProperty('java.version')
+        def runtimeJavaSpec = System.getProperty('java.specification.version')
+        println "🔧 Gradle Daemon JVM: Java $runtimeJava (spec: $runtimeJavaSpec)"
+        
+        // Check if running on JVM 17+
+        def majorVersion = Integer.parseInt(runtimeJavaSpec.split('\\.')[0])
+        if (majorVersion >= 17) {
+            println "✅ Gradle daemon is running on Java $majorVersion (compatible with Gradle 9.0)"
+        } else {
+            println "❌ Gradle daemon is running on Java $majorVersion (requires Java 17+ for Gradle 9.0)"
+            println "💡 Run setup-gradle.sh to fix this automatically"
+        }
+        
+        // Check toolchain configuration
+        if (java.toolchain.languageVersion.isPresent()) {
+            def toolchainVersion = java.toolchain.languageVersion.get().asInt()
+            println "🛠️ Project Toolchain: Java $toolchainVersion"
+            if (toolchainVersion == 11) {
+                println "✅ Project will compile with Java 11 as expected"
+            }
+        } else {
+            println "⚠️ No toolchain configured"
+        }
+        
+        println ""
+        println "📚 For setup instructions, see README_GRADLE_SETUP.md"
+    }
 } 
