@@ -626,17 +626,23 @@ public class JPFAutoDocCLI implements Callable<Integer> {
                 
                 // Set output file for this format
                 String originalOutputFile = outputFile;
+                OutputFormat originalOutputFormat = outputFormat;
+                
                 if (files != null && i < files.length) {
                     outputFile = files[i].trim();
                 } else {
                     outputFile = generateDefaultFileName(target, format);
                 }
                 
+                // Set the correct format for this iteration
+                outputFormat = format;
+                
                 try {
                     generateOutput(result, target, generator);
                 } finally {
-                    // Restore original output file
+                    // Restore original values
                     outputFile = originalOutputFile;
+                    outputFormat = originalOutputFormat;
                 }
             }
             
